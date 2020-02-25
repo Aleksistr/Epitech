@@ -5,7 +5,8 @@ import './App.css'
 
 import Card from './Card'
 import GuessCount from './GuessCount'
-import HallOfFame, {FAKE_HOF} from './HallOfFame'
+import HallOfFame from './HallOfFame'
+import HightScoreInput from './HightScoreInput'
 
 const SIDE = 6
 const VISUAL_PAUSE_MSECS = 750
@@ -16,7 +17,12 @@ class App extends Component {
     cards: this.generateCards(),
     currentPair: [],
     guesses: 0,
-    matchedCardIndices: []
+    matchedCardIndices: [],
+    hallOfFame: null
+  }
+
+  displayHalOfFame = hallOfFame => {
+    this.setState({ hallOfFame})
   }
 
   generateCards() {
@@ -75,8 +81,8 @@ class App extends Component {
   }
 
   render() {
-    const { cards, guesses, matchedCardIndices } = this.state
-    const won = matchedCardIndices.length === cards.length
+    const { cards, guesses, hallOfFame, matchedCardIndices } = this.state
+    const won = matchedCardIndices.length === 4 //cards.length
     return (
       <div className="memory">
         <GuessCount guesses={guesses} />
@@ -89,7 +95,15 @@ class App extends Component {
             key={index}
           />
         ))}
-        {won && <HallOfFame entries={FAKE_HOF}/>}
+        {won &&
+          (hallOfFame ? 
+          (<HallOfFame entries={hallOfFame} />) :
+          (<HightScoreInput
+            guesses={guesses}
+            onStored={this.displayHalOfFame}
+          />)
+          )
+        }
       </div>
     )
   }
